@@ -1,0 +1,21 @@
+apiVersion: skaffold/v1
+kind: Config
+build:
+  artifacts:
+    - image: app
+      context: .
+  local: {}
+
+deploy:
+  helm:
+    releases:
+      - name: app
+        chartPath: helm/app
+        wait: true
+        values:
+          image.name: app
+
+portForward:
+  - resourceType: service
+    resourceName: lab-partner
+    port: 3000

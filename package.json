@@ -1,0 +1,9 @@
+{
+  "name": "vault-mongodb",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@hapi/hapi": "^19.1.1"
+  }
+}
