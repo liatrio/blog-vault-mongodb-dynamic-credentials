@@ -13,9 +13,12 @@ deploy:
         chartPath: helm/app
         wait: true
         values:
-          image.name: app
+          image: app
 
 portForward:
   - resourceType: service
-    resourceName: lab-partner
-    port: 3000
+    resourceName: app
+    port: 5555
+  - resourceType: service
+    resourceName: app-vault
+    port: 8200

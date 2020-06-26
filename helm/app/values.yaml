@@ -33,7 +33,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 5555
 
 resources: {}
@@ -60,6 +60,6 @@ vault:
       enabled: true
     service:
       enabled: true
-      type: LoadBalancer
+      type: ClusterIP
   injector:
     enabled: false
