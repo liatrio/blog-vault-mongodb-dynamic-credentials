@@ -53,22 +53,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-vault:
-  enabled: true
-  server:
-    dev:
-      enabled: true
-    service:
-      enabled: true
-      type: ClusterIP
-  injector:
-    enabled: false
-
-mongodb:
-  enabled: true
-  service:
-    type: ClusterIP
-  mongodbDatabase: database
-  mongodbUsername: username
-  mongodbPassword: password

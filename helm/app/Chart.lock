@@ -1,9 +1,0 @@
-dependencies:
-- name: vault
-  repository: https://helm.releases.hashicorp.com
-  version: 0.6.0
-- name: mongodb
-  repository: https://charts.bitnami.com/bitnami
-  version: 7.14.8
-digest: sha256:101c609946c3460b813717a814793a9e84844389c981afb5b0aeb85c7dbcd7a0
-generated: "2020-06-26T11:09:14.376065-05:00"
