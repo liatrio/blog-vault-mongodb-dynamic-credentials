@@ -22,3 +22,6 @@ portForward:
   - resourceType: service
     resourceName: app-vault
     port: 8200
+  - resourceType: service
+    resourceName: app-mongodb
+    port: 27017

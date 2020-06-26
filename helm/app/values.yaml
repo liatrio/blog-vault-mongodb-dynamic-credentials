@@ -55,6 +55,7 @@ tolerations: []
 affinity: {}
 
 vault:
+  enabled: true
   server:
     dev:
       enabled: true
@@ -63,3 +64,11 @@ vault:
       type: ClusterIP
   injector:
     enabled: false
+
+mongodb:
+  enabled: true
+  service:
+    type: ClusterIP
+  mongodbDatabase: database
+  mongodbUsername: username
+  mongodbPassword: password

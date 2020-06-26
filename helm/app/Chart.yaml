@@ -25,3 +25,8 @@ dependencies:
   - name: vault
     version: v0.6.0
     repository: https://helm.releases.hashicorp.com
+    condition: vault.enabled
+  - name: mongodb
+    version: 7.14.8
+    repository: https://charts.bitnami.com/bitnami
+    condition: mongodb.enabled
