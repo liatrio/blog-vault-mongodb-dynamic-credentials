@@ -1,4 +1,5 @@
 const hapi = require("@hapi/hapi");
+const mongodb = require("./mongodb");
 
 (async () => {
     const server = hapi.server({
@@ -18,6 +19,7 @@ const hapi = require("@hapi/hapi");
         handler: () => "hello world",
     });
 
+    await mongodb.start();
     await server.start();
 
     console.log("Server running on %s", server.info.uri);
@@ -39,6 +41,7 @@ const hapi = require("@hapi/hapi");
 
 const stop = async (server, code = 0) => {
     try {
+        await mongodb.stop();
         await server.stop();
     } catch (e) {
         console.log("Error stopping server", e);

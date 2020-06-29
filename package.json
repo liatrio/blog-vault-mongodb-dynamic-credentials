@@ -4,6 +4,14 @@
   "main": "src/index.js",
   "license": "MIT",
   "dependencies": {
-    "@hapi/hapi": "^19.1.1"
+    "@hapi/hapi": "^19.1.1",
+    "mongoose": "^5.9.20",
+    "node-watch": "^0.6.4"
+  },
+  "devDependencies": {
+    "prettier": "^2.0.5"
+  },
+  "prettier": {
+    "tabWidth": 4
   }
 }

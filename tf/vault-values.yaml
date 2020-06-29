@@ -5,4 +5,6 @@ server:
     enabled: true
     type: LoadBalancer
 injector:
-  enabled: false
+  enabled: true
+  revokeOnShutdown: true
+  logLevel: debug

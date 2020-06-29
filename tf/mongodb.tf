@@ -1,3 +1,10 @@
+locals {
+  mongodb_root_password = "root"
+  mongodb_username      = "username"
+  mongodb_password      = "password"
+  mongodb_database      = "database"
+}
+
 resource "kubernetes_namespace" "mongodb" {
   metadata {
     name = "mongodb"
@@ -12,6 +19,11 @@ resource "helm_release" "mongodb" {
   wait       = true
 
   values = [
-    file("${path.module}/mongodb-values.yaml")
+    templatefile("${path.module}/mongodb-values.yaml.tpl", {
+      mongodb_username      = local.mongodb_username
+      mongodb_password      = local.mongodb_password
+      mongodb_database      = local.mongodb_database
+      mongodb_root_password = local.mongodb_root_password
+    })
   ]
 }

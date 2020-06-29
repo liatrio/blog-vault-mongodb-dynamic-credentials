@@ -1,3 +1,7 @@
+locals {
+  vault_mongodb_role = "mongodb"
+}
+
 resource "kubernetes_namespace" "vault" {
   metadata {
     name = "vault"
@@ -57,6 +61,24 @@ resource "vault_kubernetes_auth_backend_config" "k8s_vault_backend_config" {
   token_reviewer_jwt = data.kubernetes_secret.vault_token_reviewer_service_account_token.data["token"]
 }
 
+resource "vault_policy" "get_mongodb_creds" {
+  name   = "get-mongodb-creds"
+  policy = <<EOF
+path "database/creds/mongodb" {
+  capabilities = ["read"]
+}
+EOF
+}
+
+resource "vault_policy" "token_lookup_self" {
+  name   = "token-lookup-self"
+  policy = <<EOF
+path "auth/token/lookup-self" {
+  capabilities = ["read", "update"]
+}
+EOF
+}
+
 resource "vault_kubernetes_auth_backend_role" "test" {
   backend                          = vault_auth_backend.kubernetes.path
   bound_service_account_names      = [
@@ -66,4 +88,55 @@ resource "vault_kubernetes_auth_backend_role" "test" {
     "*"
   ]
   role_name                        = "test"
+
+  token_ttl      = 300
+  token_max_ttl  = 300
+  token_policies = [
+    vault_policy.get_mongodb_creds.name,
+    vault_policy.token_lookup_self.name
+  ]
+}
+
+resource "vault_mount" "mongodb" {
+  path = "database"
+  type = "database"
+}
+
+resource "vault_database_secret_backend_connection" "mongodb" {
+  backend = vault_mount.mongodb.path
+  name    = "mongodb"
+
+  allowed_roles = [
+    local.vault_mongodb_role
+  ]
+
+  data = {
+    username = "root"
+    password = local.mongodb_root_password
+  }
+
+  mongodb {
+    connection_url = "mongodb://{{username}}:{{password}}@mongodb.mongodb.svc.cluster.local:27017/admin"
+  }
+}
+
+resource "vault_database_secret_backend_role" "mongodb_role" {
+  backend             = vault_mount.mongodb.path
+  creation_statements = [
+    jsonencode({
+      db    = "admin"
+      roles = [
+        {
+          role = "readWrite"
+          db   = local.mongodb_database
+        }
+      ]
+    })
+  ]
+
+  db_name = vault_database_secret_backend_connection.mongodb.name
+  name    = local.vault_mongodb_role
+
+  default_ttl = 60
+  max_ttl     = 60
 }
