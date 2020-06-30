@@ -1,5 +1,7 @@
 const hapi = require("@hapi/hapi");
 const mongodb = require("./mongodb");
+const { loadInitialData } = require("./data");
+const { Pet } = require("./models");
 
 (async () => {
     const server = hapi.server({
@@ -16,10 +18,23 @@ const mongodb = require("./mongodb");
     server.route({
         method: "GET",
         path: "/",
-        handler: () => "hello world",
+        handler: async () => {
+            const pets = await Pet().find({});
+            const connection = mongodb.getConnection();
+
+            return {
+                pets,
+                connection: {
+                    user: connection.user,
+                    pass: connection.pass,
+                },
+                time: new Date(),
+            };
+        },
     });
 
     await mongodb.start();
+    await loadInitialData();
     await server.start();
 
     console.log("Server running on %s", server.info.uri);

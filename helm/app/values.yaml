@@ -22,7 +22,6 @@ serviceAccount:
 podAnnotations:
   vault.hashicorp.com/agent-inject: "true"
   vault.hashicorp.com/role: "test"
-  vault.hashicorp.com/agent-inject-token: "true"
   vault.hashicorp.com/agent-inject-secret-mongodb.json: "database/creds/mongodb"
   vault.hashicorp.com/agent-inject-template-mongodb.json: |
     {{- with secret "database/creds/mongodb" -}}

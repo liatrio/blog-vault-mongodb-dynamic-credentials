@@ -93,7 +93,8 @@ resource "vault_kubernetes_auth_backend_role" "test" {
   token_max_ttl  = 300
   token_policies = [
     vault_policy.get_mongodb_creds.name,
-    vault_policy.token_lookup_self.name
+    vault_policy.token_lookup_self.name,
+    "default"
   ]
 }
 

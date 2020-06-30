@@ -15,9 +15,11 @@ const getConnection = () => {
 };
 
 const setConnection = async (username, password) => {
-    connection = await mongoose.createConnection(
-        `mongodb://${username}:${password}@mongodb.mongodb.svc.cluster.local:27017/database`
+    const newConnection = await mongoose.createConnection(
+        `mongodb://${username}:${password}@mongodb.mongodb.svc.cluster.local:27017/database?authSource=admin`
     );
+
+    connection = newConnection;
 };
 
 const getDatabaseCredentials = async () => {
@@ -32,8 +34,9 @@ const start = async () => {
     console.log("initial username", username);
     console.log("initial password", password);
 
-    // await setConnection(username, password);
+    await setConnection(username, password);
 
+    // watch vault credentials file for changes and update connection
     watcher = watch(MONGODB_CREDENTIALS_FILE, async (event) => {
         console.log("received watch event:", event);
 
@@ -41,6 +44,8 @@ const start = async () => {
 
         console.log("new username:", username);
         console.log("new password:", password);
+
+        await setConnection(username, password);
     });
 };
 
