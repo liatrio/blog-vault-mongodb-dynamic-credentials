@@ -14,6 +14,7 @@ resource "helm_release" "vault" {
   namespace  = kubernetes_namespace.vault.metadata[0].name
   repository = "https://helm.releases.hashicorp.com"
   wait       = true
+  version    = "0.6.0"
 
   values = [
     file("${path.module}/vault-values.yaml")
@@ -101,6 +102,10 @@ resource "vault_kubernetes_auth_backend_role" "test" {
 resource "vault_mount" "mongodb" {
   path = "database"
   type = "database"
+
+  depends_on = [
+    helm_release.mongodb
+  ]
 }
 
 resource "vault_database_secret_backend_connection" "mongodb" {

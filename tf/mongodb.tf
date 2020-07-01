@@ -17,6 +17,7 @@ resource "helm_release" "mongodb" {
   namespace  = kubernetes_namespace.mongodb.metadata[0].name
   repository = "https://charts.bitnami.com/bitnami"
   wait       = true
+  version    = "8.0.1"
 
   values = [
     templatefile("${path.module}/mongodb-values.yaml.tpl", {

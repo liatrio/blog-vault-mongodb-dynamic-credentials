@@ -16,7 +16,8 @@ experimenting with vault ephemeral mongodb credentials
 ## setup
 
 - switch to `docker-desktop` kube context
-- run `terragrunt apply` to setup vault and mongodb
+- run `terragrunt apply -target helm_release.vault` to setup the vault server
+- run `terragrunt apply` to setup the mongodb database and vault configuration
 - run `skaffold dev --force=false --port-forward`
 
 ## usage

@@ -1,6 +1,7 @@
 service:
   type: LoadBalancer
-mongodbUsername: ${mongodb_username}
-mongodbPassword: ${mongodb_password}
-mongodbDatabase: ${mongodb_database}
-mongodbRootPassword: ${mongodb_root_password}
+auth:
+  username: ${mongodb_username}
+  password: ${mongodb_password}
+  database: ${mongodb_database}
+  rootPassword: ${mongodb_root_password}
