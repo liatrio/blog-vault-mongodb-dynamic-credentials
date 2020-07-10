@@ -36,3 +36,23 @@ you can watch the credentials updating in real time with some bash:
 ```bash
 $ while true; do curl --silent http://localhost:5555 | jq; sleep 1; done
 ```
+
+## helpful commands
+
+get a kubernetes service account token:
+
+```bash
+$ kubectl get secret $(kubectl get serviceaccount default -o jsonpath='{.secrets[0].name}') -o jsonpath='{.data.token}' | base64 -D
+```
+
+get a vault token:
+
+```bash
+$ vault write -address=http://localhost:8200 auth/kubernetes/login jwt=${serviceAccountToken} role=test -format=json
+```
+
+get mongodb creds:
+
+```bash
+$ VAULT_TOKEN=${vaultToken} vault read -address=http://localhost:8200 database/creds/mongodb
+```
