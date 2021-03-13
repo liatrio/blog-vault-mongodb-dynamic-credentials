@@ -1,4 +1,7 @@
 .idea/
 node_modules/
-helm/app/charts/
+example_app/helm/app/charts/
+backend.tf
 .terragrunt-cache/
+.terraform
+.terraform.lock.hcl
