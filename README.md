@@ -51,19 +51,23 @@ $ while true; do curl --silent http://localhost:5555 | jq; sleep 1; done
 
 ## Helpful Commands
 
-get a kubernetes service account token:
+A `test.sh` script has been provided to demonstrate fetching of ephemeral credentials. 
+
+This process requires us to perform the following steps:
+
+#### get a kubernetes service account token:
 
 ```bash
 $ kubectl get secret $(kubectl get serviceaccount default -o jsonpath='{.secrets[0].name}') -o jsonpath='{.data.token}' | base64 -D
 ```
 
-get a vault token:
+#### get a vault token:
 
 ```bash
 $ vault write -address=http://localhost:8200 auth/kubernetes/login jwt=${serviceAccountToken} role=test -format=json
 ```
 
-get mongodb creds:
+#### get mongodb creds:
 
 ```bash
 $ VAULT_TOKEN=${vaultToken} vault read -address=http://localhost:8200 database/creds/mongodb
