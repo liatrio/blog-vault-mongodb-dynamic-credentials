@@ -1,30 +1,16 @@
 locals {
   vault_mongodb_role = "mongodb"
+  mongodb_root_password = "root"
+  mongodb_username      = "username"
+  mongodb_password      = "password"
+  mongodb_database      = "database"
 }
 
-resource "kubernetes_namespace" "vault" {
-  metadata {
-    name = "vault"
-  }
-}
-
-resource "helm_release" "vault" {
-  chart      = "vault"
-  name       = "vault"
-  namespace  = kubernetes_namespace.vault.metadata[0].name
-  repository = "https://helm.releases.hashicorp.com"
-  wait       = true
-  version    = "0.6.0"
-
-  values = [
-    file("${path.module}/vault-values.yaml")
-  ]
-}
 
 resource "kubernetes_service_account" "vault_token_reviewer" {
   metadata {
     name      = "vault-token-reviewer"
-    namespace = kubernetes_namespace.vault.metadata[0].name
+    namespace = "vault"
   }
 }
 
@@ -88,8 +74,7 @@ resource "vault_kubernetes_auth_backend_role" "test" {
   bound_service_account_namespaces = [
     "*"
   ]
-  role_name                        = "test"
-
+  role_name      = "test"
   token_ttl      = 300
   token_max_ttl  = 300
   token_policies = [
@@ -103,9 +88,9 @@ resource "vault_mount" "mongodb" {
   path = "database"
   type = "database"
 
-  depends_on = [
-    helm_release.mongodb
-  ]
+  // depends_on = [
+  //   helm_release.mongodb
+  // ]
 }
 
 resource "vault_database_secret_backend_connection" "mongodb" {
@@ -146,3 +131,4 @@ resource "vault_database_secret_backend_role" "mongodb_role" {
   default_ttl = 60
   max_ttl     = 60
 }
+

@@ -1,43 +1,55 @@
-# vault-mongodb
+# blog-vault-mongodb-dynamic-credentials
 
-experimenting with vault ephemeral mongodb credentials
+A small lab setup for experimenting with vault ephemeral mongodb credentials.
 
-## tools used
+## Technology Stack
+- Runtime Environment:
+  - kubernetes (local cluster via docker for mac)
+- Dynamic Secrets Provider:
+  - [vault](https://www.vaultproject.io/)
+  - [vault k8s agent injector](https://www.vaultproject.io/docs/platform/k8s/injector)
+- Example Secured Resource:
+  - mongodb - A database
+- Deployment Tools:
+  - [terragrunt](https://terragrunt.gruntwork.io/) / [terraform](https://www.terraform.io/) - deploy infra/services
+  - [helm](https://helm.sh/) - template kubernetes configurations
+  - [skaffold](https://skaffold.dev/) - continuously deploy containerized apps/helm charts.
 
-- kubernetes (local cluster via docker for mac)
-- vault
-- vault agent
-- vault agent injector
-- mongodb
-- terragrunt / terraform
-- helm
-- skaffold
+## Prerequisite tooling you must install to use this example
+ - [Docker for Desktop](https://www.docker.com/products/docker-desktop)
+   - Install, start and enable Kubernetes.
 
-## setup
+#### All binaries should be installed and made available in $PATH
+ - [helm](https://helm.sh/docs/intro/quickstart/#install-helm)
+ - [skaffold](https://skaffold.dev/docs/install/)
+ - [terraform](https://www.terraform.io/downloads.html)
+ - [terrgrunt](https://terragrunt.gruntwork.io/docs/getting-started/install/)
 
+## Setup
 - switch to `docker-desktop` kube context
-- run `terragrunt apply -target helm_release.vault` to setup the vault server
-- run `terragrunt apply` to setup the mongodb database and vault configuration
-- run `skaffold dev --force=false --port-forward`
+- run `cd tf && terragrunt run-all apply` to setup the vault and mongodb services
 
-## usage
-
-the main app endpoint is `http://localhost:5555/`. this will query the mongodb database using
+## Example App
+```
+cd example_app
+skaffold dev --force=false --port-forward
+```
+The main app endpoint is `http://localhost:5555/`. This example will query the mongodb database using
 a set of ephemeral credentials provided by vault, and give you a response with the sample
 pet collection and the username and password used for the connection.
 
-the lease for the mongodb credentials expires every minute (for demonstration purposes, this
-is obviously way too low for a production environment). when the lease expires, the vault agent
-sidecar will renew the lease and update the secret file with the new credentials. the app is watching
+The lease for the mongodb credentials expires every minute (for demonstration purposes, this
+is obviously way too low for a production environment). When the lease expires, the vault agent
+sidecar will renew the lease and update the secret file with the new credentials. The app is watching
 this file for updates, and will update the mongodb connection using the new credentials.
 
-you can watch the credentials updating in real time with some bash:
+You can watch the credentials updating in real time with some bash:
 
 ```bash
 $ while true; do curl --silent http://localhost:5555 | jq; sleep 1; done
 ```
 
-## helpful commands
+## Helpful Commands
 
 get a kubernetes service account token:
 
